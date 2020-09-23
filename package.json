@@ -1,0 +1,23 @@
+{
+  "name": "dangdang-bug",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jon-Millent/dangdang-bug.git"
+  },
+  "author": "jon millent",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Jon-Millent/dangdang-bug/issues"
+  },
+  "homepage": "https://github.com/Jon-Millent/dangdang-bug#readme",
+  "dependencies": {
+    "axios": "^0.20.0",
+    "puppeteer": "^5.3.1"
+  }
+}
