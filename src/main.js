@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 const DD = require('./work/dd')
-
 const argv = process.argv
+
 if(argv.length <= 2) {
   console.log(`
   help
@@ -15,7 +15,6 @@ if(argv.length <= 2) {
   [more]
   更多帮助请访问 https://github.com/Jon-Millent/dangdang-bug
   `)
-
   return
 }
 

@@ -8,7 +8,7 @@ class Dd {
   * @config
   * {
   *   epubID: [required],
-  *   token: []
+  *   token: ''
   * }
   * */
   constructor(config) {
@@ -55,7 +55,6 @@ class Dd {
         total: mediaData.totalPages
       });
 
-
       // 迭代
       let chapterMapIndex = 0
       let nowTargetChapter = chapterMap['chapterId' + chapterMapIndex]
@@ -93,6 +92,7 @@ class Dd {
 
         chapterMapIndex++
         nowTargetChapter = chapterMap['chapterId' + chapterMapIndex]
+
         // 休息
         await this.sleep(1000)
       }
@@ -101,7 +101,6 @@ class Dd {
       console.log('获取图书信息失败')
       console.log( mediaInfo)
     }
-
   }
 
   saveHtml(chapterId) {
@@ -121,6 +120,7 @@ class Dd {
     }
     fs.writeFileSync(this.saveConfig.dataDir + '/' + fileName, 'window.book = ' + JSON.stringify(Obj))
   }
+
 }
 
 module.exports = Dd
