@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>${title}</title>
+
+    <style>
+        @page {
+            margin: 0;
+            padding: 0;
+            size: 5in 6.674in;
+        }
+        html, body {
+            padding: 0;
+            margin: 0;
+        }
+        body {
+            background-color: #44454A;
+        }
+        .read-box {
+            width: 660px;
+            margin: 0 auto;
+        }
+        .read-box .read-item {
+            height: 880px;
+            position: relative;
+            background-color: #fff;
+        }
+        .read-box.read-mode .read-item  {
+            margin-bottom: 10px;
+        }
+        .button {
+            position: fixed;
+            left: 50%;
+            top: 200px;
+            margin-left: -460px;
+            text-align: right;
+        }
+        .button button {
+            margin-bottom: 6px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="app">
+    <div class="read-box" :class="mode">
+        <div class="chapter-wrap">
+            <div
+                class="read-item"
+                v-for="(item2, index) in book"
+                v-html="item2.chapterInfo.snippet"
+                :key="index">
+            </div>
+        </div>
+    </div>
+
+    <div class="button">
+        <div>
+            <button @click="print" v-show="mode === 'read-mode'">打印/另存pdf</button>
+        </div>
+        <div>
+            <button @click="readMode" v-show="mode === 'print-mode'">阅读模式</button>
+        </div>
+    </div>
+</div>
+
+</body>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.min.js"></script>
+<script src="./data/${dataName}"></script>
+<script>
+  window.book.children.forEach((item)=>{
+    item.chapterInfo = JSON.parse(item.chapterInfo)
+  })
+  new Vue({
+    el: '#app',
+    data() {
+      return {
+        book: window.book.children || [],
+        mode: 'read-mode'
+      }
+    },
+    methods: {
+      print() {
+        this.mode = 'print-mode'
+
+        setTimeout(()=>{
+          window.print()
+        }, 300)
+      },
+      readMode() {
+        this.mode = 'read-mode'
+      }
+    }
+  })
+</script>
+</html>
