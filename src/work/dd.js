@@ -20,6 +20,26 @@ class Dd {
       dataDir: path.join(this.baseDir, '/data'),
       htmlDir: this.baseDir
     }
+
+    this.mode = {
+      'slow': {
+        every: 1000,
+        last: 5000,
+        label: 'slow'
+      },
+      'normal': {
+        every: 600,
+        last: 2000,
+        label: 'normal'
+      },
+      'fast': {
+        every: 0,
+        last: 1000,
+        label: 'fast'
+      }
+    }
+
+    this.targetMode = this.mode[this.config.mode] || this.mode['normal']
   }
 
   sleep(time) {
@@ -30,7 +50,26 @@ class Dd {
     })
   }
 
+  getCacheDownloadIndex() {
+    let dir = fs.readdirSync(this.saveConfig.htmlDir)
+    let max = -1
+
+    dir.forEach(item=> {
+      if(item.indexOf('chapter') !== -1) {
+        let num = item.replace('chapter-', '').replace('.html', '')
+        max = Math.max( max, parseInt(num) )
+      }
+    })
+    return max > -1 ? max : null
+  }
+
   async bug() {
+
+    // 获取当前目录是否有下载的文件, 以便判断断点续下
+    let cacheDownloadIndex = this.getCacheDownloadIndex()
+
+    console.log('>下载模式: ' + this.targetMode.label)
+
     let mediaInfo = await getPcMediaInfo({
       epubID: this.config.epubID,
       token: this.config.token
@@ -56,9 +95,15 @@ class Dd {
       });
 
       // 迭代
-      let chapterMapIndex = 0
+      let chapterMapIndex = cacheDownloadIndex || 0
       let nowTargetChapter = chapterMap['chapterId' + chapterMapIndex]
       let locationIndex = 0
+
+      // 如果有本地下载记录, locationIndex需要迭代增加
+      if(chapterMapIndex > 0) {
+        locationIndex = chapterMapIndex
+        console.log('检测到本地下载记录, 继续下载.')
+      }
 
       while (nowTargetChapter) {
 
@@ -84,7 +129,21 @@ class Dd {
             bookLib.children.push(
               bookListInfo.data
             )
+          } else {
+            console.log(`
+            
+            下载失败可能是以下原因
+            1. 下载到需要token章节,停止下载
+            2. 下载速度过快, 请设置成 slow 或者 normal模式
+            错误信息:
+            
+            `)
+            console.log(bookListInfo)
+            nowTargetChapter = null
+            return
           }
+
+          await this.sleep(this.targetMode.every)
         }
 
         this.saveJson(`chapter-${chapterMapIndex}.js`, bookLib)
@@ -94,8 +153,9 @@ class Dd {
         nowTargetChapter = chapterMap['chapterId' + chapterMapIndex]
 
         // 休息
-        await this.sleep(1000)
+        await this.sleep(this.targetMode.last)
       }
+
       console.log('下载完成')
     } else{
       console.log('获取图书信息失败')

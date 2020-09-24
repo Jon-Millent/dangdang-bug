@@ -6,6 +6,7 @@
 * 30m左右的html格式图书压缩后大约3m左右
 * 电脑离线阅读
 * 转换pdf后可以在ipad上做笔记
+* 支持断点下载
 
 ## 须知
 本程序适用于以下场景
@@ -21,13 +22,20 @@ npm install dangdang-bug -g
 
 ## 使用
 ```shell script
-dangdang [epubID] [token]
+dangdang [epubID] [token] [mode]
 ```
 * epubID 是电子书阅读时候的ID,您在阅读的时候可以在url中看到
 ![epubID](https://i.loli.net/2020/09/24/tdo6ZTxeWrphsl9.png)
 
 * token 是下载完整书籍的钥匙,如果您不传token则只能下载试读章节,token可以在网页`F12`网页控制台的请求中查看到
 ![token](https://i.loli.net/2020/09/24/MG4dUeLusSkVq8F.png)
+
+* mode 下载模式, 有三种下载模式 slow | normal | fast 默认为 normal, 对于章节少的书可以用fast 或者 normal, 章节多的书请用slow
+
+示例
+```shell script
+dangdang 123456 t75757554315345 slow
+```
 
 默认下载到当前命令行运行文件目录,生成格式如下
 ```shell script

@@ -18,9 +18,16 @@ if(argv.length <= 2) {
   return
 }
 
+argv.forEach((item, index)=> {
+  if(item === 'null') {
+    argv[index] = null
+  }
+})
+
 let dd = new DD({
   epubID: argv[2],
-  token: argv[3] || ''
+  token: argv[3] || '',
+  mode: argv[4] || 'normal'
 })
 
 dd.bug()
