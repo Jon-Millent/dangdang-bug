@@ -1,6 +1,6 @@
 # dangdang-bug
 
-离线下载当当html格式图书,支持离线阅读,html转pdf阅读
+离线下载当当html格式图书,支持离线阅读,html转pdf阅读  
 
 ## 优点
 * 30m左右的html格式图书压缩后大约3m左右
@@ -66,4 +66,6 @@ dangdang 1900016635
 由于token过期时间短,请每隔一段时间查看更新一下你输入的token
 
 ## 声明
-请您遵循上述须知协议,书籍宝贵,请勿盗用
+请您遵循上述须知协议,书籍宝贵,请勿盗用  
+
+![book](https://i.loli.net/2020/10/11/Gk59jbtEHMUWuxL.png)
