@@ -2,6 +2,8 @@
 
 离线下载当当html格式图书,支持离线阅读,html转pdf阅读  
 
+![version](https://img.shields.io/github/package-json/v/jon-millent/dangdang-bug.svg)
+  
 ## 优点
 * 30m左右的html格式图书压缩后大约3m左右
 * 电脑离线阅读
