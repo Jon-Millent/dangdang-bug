@@ -25,17 +25,20 @@ class Dd {
       'slow': {
         every: 1000,
         last: 5000,
-        label: 'slow'
+        label: 'slow',
+        error_sleep: 10000
       },
       'normal': {
         every: 600,
         last: 2000,
-        label: 'normal'
+        label: 'normal',
+        error_sleep: 6000
       },
       'fast': {
         every: 0,
         last: 1000,
-        label: 'fast'
+        label: 'fast',
+        error_sleep: 1000
       }
     }
 
@@ -68,7 +71,7 @@ class Dd {
     // 获取当前目录是否有下载的文件, 以便判断断点续下
     let cacheDownloadIndex = this.getCacheDownloadIndex()
 
-    console.log('>下载模式: ' + this.targetMode.label)
+    console.log('>下载模式: ' + this.targetMode.label + '\n')
 
     let mediaInfo = await getPcMediaInfo({
       epubID: this.config.epubID,
@@ -83,7 +86,7 @@ class Dd {
         cover: mediaData.mediaVo.coverPic,
       }
 
-      console.log(`获取信息成功: \n ${iNeedInfo.title} \n 准备开始下载`)
+      console.log(`>获取信息成功: \n 《${iNeedInfo.title}》 \n 准备开始下载\n`)
 
       let chapterMap = mediaData.chapterMap
 
@@ -102,7 +105,7 @@ class Dd {
       // 如果有本地下载记录, locationIndex需要迭代增加
       if(chapterMapIndex > 0) {
         locationIndex = chapterMapIndex
-        console.log('检测到本地下载记录, 继续下载.')
+        console.log('*检测到本地下载记录, 继续下载.\n')
       }
 
       while (nowTargetChapter) {
@@ -116,33 +119,43 @@ class Dd {
         }
 
         for(let page = 0; page < nowTargetChapter.pageCount; page ++) {
-          let bookListInfo = await getPcChapterInfo({
-            epubID: this.config.epubID,
-            chapterID: bookLib.chapterID,
-            pageIndex: page,
-            locationIndex,
-            token: this.config.token
-          })
-          locationIndex++
-          bar.tick(1);
-          if(bookListInfo.isSuccess) {
-            bookLib.children.push(
-              bookListInfo.data
-            )
-          } else {
-            console.log(`
-            
-            下载失败可能是以下原因
-            1. 下载到需要token章节,停止下载
-            2. 下载速度过快, 请设置成 slow 或者 normal模式
-            错误信息:
-            
-            `)
-            console.log(bookListInfo)
-            nowTargetChapter = null
-            return
-          }
 
+          // 当前是否下载成功
+          let itemDownloadDown = false
+
+          while (!itemDownloadDown) {
+            let bookListInfo = await getPcChapterInfo({
+              epubID: this.config.epubID,
+              chapterID: bookLib.chapterID,
+              pageIndex: page,
+              locationIndex,
+              token: this.config.token
+            })
+
+            if(bookListInfo.isSuccess) {
+              itemDownloadDown = true
+              locationIndex++
+              bar.tick(1);
+              bookLib.children.push(
+                bookListInfo.data
+              )
+            } else {
+
+              if(bookListInfo.status) {
+                console.log(`\n下载失败可能是以下原因: token到期或者没权限`)
+                console.log(`\n错误信息:\n`)
+                console.log(bookListInfo)
+                console.log(`\n你可以请截图到github: https://github.com/Jon-Millent/dangdang-bug/issues`)
+                nowTargetChapter = null
+                itemDownloadDown = true
+                return
+              } else {
+                // console.log('频率 + 重试')
+                await this.sleep(this.targetMode.error_sleep)
+              }
+
+            }
+          }
           await this.sleep(this.targetMode.every)
         }
 
@@ -156,7 +169,7 @@ class Dd {
         await this.sleep(this.targetMode.last)
       }
 
-      console.log('下载完成')
+      console.log('\n下载完成, （￣︶￣）↗　')
     } else{
       console.log('获取图书信息失败')
       console.log( mediaInfo)

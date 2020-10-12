@@ -1,7 +1,7 @@
 {
   "name": "dangdang-bug",
-  "version": "1.0.0",
-  "description": "",
+  "version": "1.1.0",
+  "description": "当当云阅读下载器",
   "bin": {
     "dangdang": "./src/main.js"
   },
