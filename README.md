@@ -39,12 +39,12 @@ dangdang [epubID] [token] [mode]
 
 示例
 ```shell script
-dangdang 1901065019
+dangdang 1900391691
 ```
 
 无token更改模式输入`null`
 ```shell script
-dangdang 1901065019 null slow
+dangdang 1900391691 null slow
 ```
 
 默认下载到当前命令行运行文件目录,生成格式如下
